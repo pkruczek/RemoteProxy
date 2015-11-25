@@ -7,16 +7,16 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.Random;
 import java.util.Scanner;
 
-import pl.edu.agh.remoteproxy.common.remote.ClientRemoteProxy;
+import pl.edu.agh.remoteproxy.common.remote.ClientService;
 import pl.edu.agh.remoteproxy.common.remote.RemoteConfig;
-import pl.edu.agh.remoteproxy.common.remote.ServerRemoteProxy;
+import pl.edu.agh.remoteproxy.common.remote.ServerService;
 import pl.edu.agh.remoteproxy.common.remote.Vector;
 
-public class ClientRemoteProxyImpl extends UnicastRemoteObject implements ClientRemoteProxy, Runnable {
+public class ClientServiceImpl extends UnicastRemoteObject implements ClientService, Runnable {
 	private static final long serialVersionUID = 1L;
-	private ServerRemoteProxy server;
+	private ServerService server;
 
-	public ClientRemoteProxyImpl(ServerRemoteProxy server) throws RemoteException {
+	public ClientServiceImpl(ServerService server) throws RemoteException {
 		this.server = server;
 		this.server.initialise(this);
 	}
@@ -53,8 +53,8 @@ public class ClientRemoteProxyImpl extends UnicastRemoteObject implements Client
 //			ServerRemoteProxy server = (ServerRemoteProxy) Naming.lookup(url);
 //			new Thread(new ClientRemoteProxyImpl(server)).start();
 			Registry registry = LocateRegistry.getRegistry("localhost", RemoteConfig.PORT);
-			ServerRemoteProxy server = (ServerRemoteProxy) registry.lookup(RemoteConfig.RMI_ID);
-			new Thread(new ClientRemoteProxyImpl(server)).start();
+			ServerService server = (ServerService) registry.lookup(RemoteConfig.RMI_ID);
+			new Thread(new ClientServiceImpl(server)).start();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
